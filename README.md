@@ -1,4 +1,6 @@
-Monitoramento de Agentes 
+<div align="center">
+<h1>Agente de monitoramento web </h1></div>
+</div>
 
 Este projeto é uma solução de monitoramento que utiliza agentes para coletar métricas de disponibilidade de serviços (via ping e testes web) e exibi-las em um painel do Grafana. O sistema é containerizado com Docker e utiliza um banco de dados SQLite para armazenamento local.
 
@@ -12,84 +14,88 @@ O projeto consiste em três componentes principais:
 
 O sistema é orquestrado usando `docker-compose`, facilitando a execução e o gerenciamento dos componentes.
 
+### Diagrama de Arquitetura
+
+ciamento dos componentes.
+
 
 
 
 ### Diagrama de Arquitetura
 
+<pre>
 +-------------------+       +-------------------+       +-------------------+
-|   Ping Agent      |       |   Web Test Agent  |       |     Grafana       |
-|  (ping_script.sh) |       |  (web_script.sh)  |       |                   |
+| Ping Agent        |       | Web Test Agent    |       | Grafana           |
+| (ping_script.sh)  |       | (web_script.sh)   |       |                   |
 +-------------------+       +-------------------+       +-------------------+
-          |                         |                           |
-          |                         |                           |
-          v                         v                           |
+         |                         |                           |
+         |                         |                           |
+         v                         v                           |
 +-------------------+       +-------------------+               |
-|   SQLite Database |<------|   SQLite Database |<--------------+
-|  (monitoramento.db)       |  (monitoramento.db)               |
+| SQLite Database   |<------| SQLite Database   |<--------------+
+| (monitoramento.db)|       | (monitoramento.db)|               
 +-------------------+       +-------------------+               |
-          ^                         ^                           |
-          |                         |                           |
-          +-------------------------+---------------------------+
+         ^                         ^                           |
+         |                         |                           |
+         +-------------------------+---------------------------+
+</pre>
 
 
-Descrição dos Componentes
-Agente de Ping (ping-agent):
 
-Função: Realiza testes de ping em hosts especificados.
 
-Tecnologias: Script Bash (ping_script.sh), Docker.
 
-Saída: Armazena os resultados no banco de dados SQLite (monitoramento.db).
+## Descrição dos Componentes
 
-Agente de Teste Web (web-test-agent):
+### Agente de Ping (ping-agent)
 
-Função: Realiza requisições HTTP em URLs especificadas para verificar a disponibilidade de serviços web.
+- **Função:** Realiza testes de ping em hosts especificados.
+- **Tecnologias:** Script Bash (`ping_script.sh`), Docker.
+- **Saída:** Armazena os resultados no banco de dados SQLite (`monitoramento.db`).
 
-Tecnologias: Script Bash (web_script.sh), Docker.
+### Agente de Teste Web (web-test-agent)
 
-Saída: Armazena os resultados no banco de dados SQLite (monitoramento.db).
+- **Função:** Realiza requisições HTTP em URLs especificadas para verificar a disponibilidade de serviços web.
+- **Tecnologias:** Script Bash (`web_script.sh`), Docker.
+- **Saída:** Armazena os resultados no banco de dados SQLite (`monitoramento.db`).
 
-Grafana:
+### Grafana
 
-Função: Exibe os dados coletados em painéis (dashboards) personalizados.
+- **Função:** Exibe os dados coletados em painéis (dashboards) personalizados.
+- **Tecnologias:** Grafana, Docker.
+- **Configuração:** Utiliza um arquivo `datasource.yml` para conectar ao banco de dados SQLite e um arquivo JSON para definir o painel.
 
-Tecnologias: Grafana, Docker.
+### Banco de Dados SQLite
 
-Configuração: Utiliza um arquivo datasource.yml para conectar ao banco de dados SQLite e um arquivo JSON para definir o painel.
+- **Função:** Armazena os dados coletados pelos agentes.
+- **Localização:** `database/monitoramento.db`.
+- **Inicialização:** O banco de dados é inicializado com o script `init.sql`.
 
-Banco de Dados SQLite:
+### Orquestração com Docker Compose
 
-Função: Armazena os dados coletados pelos agentes.
+- **Função:** Gerencia a execução dos containers dos agentes e do Grafana.
+- **Arquivo de Configuração:** `docker-compose.yml`.
 
-Localização: database/monitoramento.db.
+## Como Executar o Projeto
 
-Inicialização: O banco de dados é inicializado com o script init.sql.
+### Pré-requisitos
 
-Orquestração com Docker Compose:
+- Docker e Docker Compose instalados.
+- Acesso à internet para baixar as imagens Docker.
 
-Função: Gerencia a execução dos containers dos agentes e do Grafana.
+### Passos para Execução
 
-Arquivo de Configuração: docker-compose.yml.
+1. **Clone o repositório:**
 
-Como Executar o Projeto
-Pré-requisitos
-Docker e Docker Compose instalados.
+   ```bash
+   git clone https://github.com/seu-usuario/monitoramenro-ag.git
+   cd monitoramenro-ag
 
-Acesso à internet para baixar as imagens Docker.
-
-Passos para Execução
-Clone o repositório:
-
-bash
-Copy
-git clone https://github.com/seu-usuario/monitoramenro-ag.git
-cd monitoramenro-ag
-Inicie os containers com Docker Compose:
-
-bash
-Copy
+2 . Inicie os containers com Docker Compose:
+<pre>
+ 
 docker-compose up -d
+ </pre>
+
 Acesse o Grafana:
 
 Abra o navegador e acesse http://localhost:3000.
@@ -101,8 +107,8 @@ Verifique os painéis:
 O painel "Agente de Monitoramento" já estará configurado para exibir os dados coletados.
 
 Estrutura do Projeto
-plaintext
-Copy
+<pre>
+
 monitoramenro-ag/
 ├── database
 │   ├── init.sql                # Script de inicialização do banco de dados
@@ -124,3 +130,5 @@ monitoramenro-ag/
     ├── Dockerfile              # Dockerfile para o agente de teste web
     ├── Dockerfile.Default      # Dockerfile original (backup)
     └── web_script.sh           # Script de monitoramento web
+</pre>
+
