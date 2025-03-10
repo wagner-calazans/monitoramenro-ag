@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  ping-agent:
+    build: ./ping-agent
+    container_name: ping-agent
+    restart: unless-stopped
+    volumes:
+      - ./database:/database  # Monta o diretório do SQLite
+    environment:
+      - DB_PATH=/database/monitoramento.db
+
+  web-test-agent:
+    build: ./web-test-agent
+    container_name: web-test-agent
+    restart: unless-stopped
+    volumes:
+      - ./database:/database  # Monta o diretório do SQLite
+    environment:
+      - DB_PATH=/database/monitoramento.db
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./database:/database  # Monta o diretório do SQLite
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        grafana-cli plugins install frser-sqlite-datasource
+        /run.sh
+
+volumes:
+  grafana-storage:
